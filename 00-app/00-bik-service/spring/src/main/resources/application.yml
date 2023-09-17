@@ -1,0 +1,41 @@
+spring:
+  application.name: bik-service
+  rabbitmq:
+    port: ${RABBIT_PORT:5672}
+    host: ${RABBIT_HOST:localhost}
+  flyway.locations: classpath:db/migration/postgresql
+  datasource:
+    # driverClassName: org.postgresql.Driver
+    driverClassName: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/test?currentSchema=bik&zipkinServiceName=credit-db
+    username: test
+    password: test
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+  zipkin.base-url: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}/
+  data.mongodb.uri: mongodb://root:example@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/test?authSource=admin
+  cache.names: 
+    - credit-info
+    - occupation-scores
+mongock:
+  migration-scan-package:
+    - pl.smarttesting.bik.score.credit
+
+server.port: ${SERVER_PORT:7654}
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'

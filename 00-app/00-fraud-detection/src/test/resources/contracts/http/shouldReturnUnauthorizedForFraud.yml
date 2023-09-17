@@ -1,0 +1,17 @@
+# Dotyczy lekcji 05-03
+
+request:
+    method: POST
+    url: /fraudCheck
+    headers:
+        Content-Type: application/json
+    body:
+        uuid: cc8aa8ff-40ff-426f-bc71-5bb7ea644108
+        person:
+            name: Fraudeusz
+            surname: Fraudowski
+            dateOfBirth: 01-01-1980
+            gender: MALE
+            nationalIdentificationNumber: 2345678901
+response:
+    status: 401

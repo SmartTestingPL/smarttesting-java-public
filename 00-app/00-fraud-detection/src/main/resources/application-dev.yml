@@ -1,0 +1,17 @@
+spring:
+  zipkin:
+    enabled: false
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration, org.springframework.boot.actuate.autoconfigure.amqp.RabbitHealthContributorAutoConfiguration
+  datasource:
+    url: jdbc:h2:mem:my-app
+    driverClassName: org.h2.Driver
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true

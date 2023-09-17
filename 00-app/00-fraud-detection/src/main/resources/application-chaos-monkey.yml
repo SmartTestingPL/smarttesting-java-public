@@ -1,0 +1,21 @@
+# Dotyczy lekcji 05-04
+management.endpoint:
+  chaosmonkey.enabled: true
+  chaosmonkeyjmx.enabled: true
+
+chaos:
+  monkey:
+    enabled: false
+    watcher:
+      component: false
+      controller: false
+      repository: false
+      rest-controller: false
+      service: true
+    assaults:
+      level: 1
+      latency-active: false
+      latency-range-start: 1000
+      latency-range-end: 3000
+      exceptions-active: true
+      memory-active: false

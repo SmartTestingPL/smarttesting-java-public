@@ -1,0 +1,20 @@
+# Dotyczy lekcji 05-03
+
+label: fraud_found
+input:
+  triggeredBy: fraudFound()
+outputMessage:
+  sentTo: fraudOutputQueue
+  body:
+      person:
+          name: Fraudeusz
+          surname: Fraudowski
+          dateOfBirth: 01-01-1980
+          gender: MALE
+          nationalIdentificationNumber: 2345678901
+      result:
+          userId: cc8aa8ff-40ff-426f-bc71-5bb7ea644108
+          status: VERIFICATION_FAILED
+  headers:
+    contentType: application/json
+    amqp_receivedRoutingKey: '#'

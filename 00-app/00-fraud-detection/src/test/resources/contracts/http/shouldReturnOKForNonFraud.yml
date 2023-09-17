@@ -1,0 +1,17 @@
+# Dotyczy lekcji 05-03
+
+request:
+    method: POST
+    url: /fraudCheck
+    headers:
+        Content-Type: application/json
+    body:
+        uuid: 89c878e3-38f7-4831-af6c-c3b4a0669022
+        person:
+            name: Stefania
+            surname: Stefanowska
+            dateOfBirth: 01-01-2020
+            gender: FEMALE
+            nationalIdentificationNumber: 1234567890
+response:
+    status: 200

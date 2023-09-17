@@ -1,0 +1,10 @@
+{
+  "uuid" : "5cd495e7-9a66-4c4b-bba2-8d15cc8d9e68",
+  "person" : {
+    "name" : "Stefania",
+    "surname" : "Stefanowska",
+    "dateOfBirth" : "01-05-1989",
+    "gender" : "FEMALE",
+    "nationalIdentificationNumber" : "89050193724"
+  }
+}

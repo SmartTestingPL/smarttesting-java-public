@@ -1,0 +1,17 @@
+# Dotyczy lekcji 05-03
+
+request:
+  method: GET
+  url: /00262161334
+response:
+  status: 403
+  headers:
+    Content-Type: application/json
+  body:
+    userId: cc8aa8ff-40ff-426f-bc71-5bb7ea644108
+    status: VERIFICATION_FAILED
+  matchers:
+    body:
+      - path: $.userId
+        type: by_regex
+        predefined: uuid

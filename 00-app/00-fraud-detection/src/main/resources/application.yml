@@ -1,0 +1,41 @@
+spring:
+  rabbitmq:
+    port: ${RABBIT_PORT:5672}
+    host: ${RABBIT_HOST:localhost}
+  flyway.locations: classpath:db/migration/
+  datasource:
+    # driverClassName: org.postgresql.Driver
+    driverClassName: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/test?currentSchema=fraud&zipkinServiceName=fraud-db
+    username: test
+    password: test
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+  zipkin.base-url: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}/
+  application:
+    name: fraud-detection
+
+server.port: ${SERVER_PORT:8765}
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+logging:
+  level:
+    org.apache.http: WARN
+    com.github.dockerjava: WARN
+    org.zeroturnaround.exec: WARN

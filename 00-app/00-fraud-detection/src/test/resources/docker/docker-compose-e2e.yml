@@ -1,0 +1,81 @@
+version: '3.1'
+
+services:
+  # infrastructure
+  postgres:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+  rabbitmq:
+    image: rabbitmq:3.9.7-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
+  income-wiremock:
+    image: rodolpheche/wiremock:2.31.0
+    ports:
+      - 1234:1234
+    volumes:
+      - ./income-wiremock/:/home/wiremock
+    command: --port 1234
+  personal-wiremock:
+    image: rodolpheche/wiremock:2.31.0
+    ports:
+      - 2345:2345
+    volumes:
+      - ./personal-wiremock/:/home/wiremock
+    command: --port 2345
+  monthly-cost-wiremock:
+    image: rodolpheche/wiremock:2.31.0
+    ports:
+      - 3456:3456
+    volumes:
+      - ./monthly-cost-wiremock/:/home/wiremock
+    command: --port 3456
+  social-wiremock:
+    image: rodolpheche/wiremock:2.31.0
+    ports:
+      - 4567:4567
+    volumes:
+      - ./social-wiremock/:/home/wiremock
+    command: --port 4567
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+  wait-for-postgres:
+    image: willwill/wait-for-it
+    command: ["postgres:5432", "-s", "--", "echo",  "DB UP"]
+  
+  # applications
+  bik-service:
+    image: smarttesting/bik-service:latest
+    ports:
+      - 7654:7654
+    environment:
+      SERVER_PORT: 7654
+      DB_HOST: postgres
+      RABBIT_HOST: rabbitmq
+      MONGO_HOST: mongo
+      ZIPKIN_HOST: zipkin
+  fraud-detection:
+    image: smarttesting/fraud-detection:latest
+    ports:
+      - 8765:8765
+    environment:
+      SERVER_PORT: 8765
+      DB_HOST: postgres
+      RABBIT_HOST: rabbitmq
+      ZIPKIN_HOST: zipkin
+

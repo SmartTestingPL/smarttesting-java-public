@@ -1,0 +1,15 @@
+# Dotyczy lekcji 05-03
+
+label: credit_score
+input:
+  triggeredBy: triggerCreditScore()
+outputMessage:
+  sentTo: scoreQueue
+  body:
+    pesel:
+      pesel: 12345678901
+    score:
+      points: 100
+  headers:
+    contentType: application/json
+    amqp_receivedRoutingKey: '#'

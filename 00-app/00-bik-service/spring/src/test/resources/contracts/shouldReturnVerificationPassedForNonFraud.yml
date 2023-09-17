@@ -1,0 +1,17 @@
+# Dotyczy lekcji 05-03
+
+request:
+  method: GET
+  url: /89050193724
+response:
+  status: 200
+  headers:
+    Content-Type: application/json
+  body:
+    userId: 5cd495e7-9a66-4c4b-bba2-8d15cc8d9e68
+    status: VERIFICATION_PASSED
+  matchers:
+    body:
+      - path: $.userId
+        type: by_regex
+        predefined: uuid

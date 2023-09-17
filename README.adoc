@@ -1,0 +1,29 @@
+=  SmartTesting
+
+== Struktura folderów
+
+* Każda lekcja ma swoje podfoldery (e.g `01-introduction-to-testing`).
+* Każdy folder zawiera plik `README.adoc` z dodatkowym opisem dla każdej lekcji.
+* Moduł `00-app` zawiera aplikację symulującą kod biznesowy. Aplikacja będzie wykorzystana w pracy domowej.
+
+== Wymagania
+
+Żeby uruchomić projekt należy mieć zainstalowane:
+
+* JDK (min. 17)
+* Docker
+* Docker Compose
+
+== Jak zbudować projekt?
+
+Wystarczy uruchomić komendę
+
+```
+$ ./mvnw clean install
+```
+
+== Uwagi do uczestników
+
+Kod produkcyjny nie jest kodem referencyjnym. Tzn. jest on przygotowany pod szkolenie, a nie ma być wzorem pisania kodu produkcyjnego.
+
+Kod jest napisany w języku angielskim natomiast JavaDoci i komentarze piszemy po polsku, żeby uczestnikom szkolenia było wygodniej przyswajać wiedzę.
