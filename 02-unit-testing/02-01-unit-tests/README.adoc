@@ -1,0 +1,21 @@
+= 02.01 Testy jednostkowe c.d.
+
+Tematy omawiane w tej części:
+
+* Struktura klasy testowej:
+  - setup i tear-down; zobacz: `LoanOrderServiceTest`
+  - zastosowanie builderów; zobacz: `CustomerBuilder` i `CustomerVerifierTest`
+  - klasy bazowe; zobacz: `LoanOrderTestBase`, `CustomerTestBase`
+* Co i kiedy testować
+  - testowanie wyniku operacji; zobacz: `LoanOrderServiceTest.shouldCreateStudentLoanOrder`
+  - testowanie stanu; zobacz: `LoanOrderTest.shouldAddManagerPromo`
+  - testowanie interakcji; zobacz: `CustomerVerifierTest.shouldEmitVerificationEvent`
+  - które metody testować
+* Mockowanie i stubowanie
+  - zobacz: `LoanOrderServiceTest`
+* Szkoły testów jednostkowych
+* Mocki i stuby - dobre praktyki
+* Testy Data-Driven
+  - zobacz: `NationalIdentificationNumberVerificationTest`
+
+
