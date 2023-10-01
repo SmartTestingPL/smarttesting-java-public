@@ -1,0 +1,3 @@
+spring:
+  rabbitmq:
+    port: ${RABBIT_PORT:5672}

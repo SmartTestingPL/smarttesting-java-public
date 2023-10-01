@@ -1,0 +1,72 @@
+= Kontroler / HTTP
+
+== Kod
+
+`FraudController.java`
+
+== Notatki
+
+Zanim napiszemy jakikolwiek test, powinniśmy sobie zadać pytanie, co dokładnie chcemy przetestować. Jaki jest cel naszego testu? W tym przypadku, mamy kontroler czyli obiekt przyjmujący żądania HTTP i zwracający odpowiedź w tym protokole.
+
+Mamy kilka możliwości testowania kontrolerów:
+testowanie kontrolera jako obiektu, testowanie kontrolera po warstwie HTTP z alokacją portu, testowanie kontrolera po warstwie HTTP bez alokacji portu
+
+Rozważmy teraz przypadki takich testów, jednak zobaczmy najpierw kod. Przykładem będzie kod napisany w Javie z użyciem Springa.
+
+=== Testowanie kontrolera jako obiektu [01]
+
+==== Klasy
+
+`_01_ControllerTests.java` i klasy w niej zagnieżdżone.
+
+==== Notatki
+
+Jeśli zainicjujemy kontroler jako obiekt oraz jego zależności to z punktu widzenia kontrolera mamy nic innego jak test jednostkowy. W taki sposób testujemy bez warstwy HTTP logikę naszych komponentów. Zakładając, że przetestowaliśmy jednostkowo customerVerifier, taki test nam nic nie daje. Zatem skoro naszym celem jest zweryfikowanie czy nasz kontroler komunikuje się po warstwie HTTP to kompletnie nam się to nie udało.
+
+Czy jest to zły test? Nie, ale trzeba włączyć w to testowanie warstwy HTTP.
+
+=== Testowanie kontrolera po warstwie HTTP z alokacją portu [02]
+
+==== Klasy
+
+`_02_FraudControllerWithPortBindingTests.java` i klasy w niej zagnieżdżone.
+
+=== Zamockowanie serwisu [03]
+
+==== Klasy
+
+`_03_FraudControllerWithFakeAndPortBindingTests.java` i klasy w niej zagnieżdżone.
+
+==== Notatki
+
+Ponieważ chcemy jedynie przetestować warstwę kontrolera, pierwszą rzeczą, którą powinniśmy zrobić to użyć fakeowowej implementacji / mocka dla naszego serwisu aplikacyjnego. Nie chcemy testować na tym etapie warstwy biznesowej.
+
+W tym celu w naszej konfiguracji jesteśmy w stanie utworzyć ręcznie taką implementację, która na potrzeby naszego testu warstwy HTTP zwróci sztucznie pewne wyniki. Naszym celem jest asercja możliwości komunikacji po protokole HTTP.
+
+Tak przygotowaną konfigurację możemy wykorzystać również w testach kontraktowych, o których będziemy mówić w późniejszych częściach tego szkolenia.
+
+=== Mockowanie warstwy sieciowej [04]
+
+==== Klasy
+
+`_04_MockMvcControllerTests.java` i klasy w niej zagnieżdżone.
+
+==== Notatki
+
+W różnych językach programowania narzędzia do obsługi kontrolerów często dostarczają możliwość uruchomienia testu z zamockowaną warstwą sieciową. Już wiemy, że interakcja z IO jest źródłem opóźnień w naszych testach.
+
+W przypadku Javy i Springa, takim narzędziem jest MockMvc. Bez wchodzenia w większe szczegóły, możemy zobaczyć tu, gotowy komponent testowy MockMvc, który pozwala na szybsze testowanie bez wykorzystania IO i bindowaniu na porcie.
+
+Kontekst Springowy jest ograniczony, nie uruchamia całej aplikacji, tylko jej kluczowe elementy. MockMvc daje nam fluent API, dzięki któremu jesteśmy w stanie w elegancki sposób zapisać co chcemy uzyskać z punktu widzenia testowania API.
+
+=== Frameworki BDD do testowania API [05]
+
+==== Kod
+
+Najpierw `_05_RestAssuredMockMvcStandaloneTests.java`, potem `_05_RestAssuredMockMvcWebContextTests.java`
+
+==== Notatki
+
+Czy w takim razie stawianie całej aplikacji niezależnie od tego czy alokujemy port czy nie jest złe?
+
+Nie, gdyż można wykorzystać takie testy do testu integracyjnego krytycznych ścieżek naszej aplikacji.

@@ -1,0 +1,12 @@
+= Testowanie na środowisku deweloperskim - kod produkcyjny
+
+== Kod
+
+Przede wszystkim `CustomerConfiguration.java`. Tam definiujemy różny układ konfiguracyjny w zależności od podanego profilu.
+
+Przy uruchomieniu deweloperskim, ładowany jest też plik konfiguracyjny `application-dev.yml`, w którym to pliku
+* wyłączamy obsługę RabbitMQ
+* włączamy bazę danych w pamięci (h2) i ładujemy testowe dane
+* włączamy dostęp do usług zarządczych (`management.endpoints`) poprzez warstwę HTTP - dzięki temu możemy pobrać informację o liczbie rekordów oraz zasymulować wiadomość z kolejki
+
+W `pom.xml` definiujemy też budowanie obrazu dockerowego.

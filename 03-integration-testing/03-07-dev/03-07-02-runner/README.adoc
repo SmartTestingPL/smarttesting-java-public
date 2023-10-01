@@ -1,0 +1,5 @@
+= Testowanie na środowisku deweloperskim - uruchamianie z dockerami
+
+== Kod
+
+Tylko `DemoApplicationTests.java`, które uruchamia za pomocą Docker Compose kontenery z infrastrukturą i naszą aplikacją.

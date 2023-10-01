@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14.1
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+  rabbitmq:
+    image: rabbitmq:3.8.27-management-alpine
+    ports:
+      - 5672:5672
+  app:
+    image: docker.io/smarttesting/integration-testing-app:latest
+    ports:
+      - 7654:7654
+    environment:
+      SERVER_PORT: 7654
+      DB_HOST: postgres
+      RABBIT_HOST: rabbitmq
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+      - postgres
+    links:
+      - postgres
+      - rabbitmq
+

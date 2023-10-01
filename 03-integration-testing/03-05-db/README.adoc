@@ -1,0 +1,108 @@
+= Bazy danych
+
+== Kod
+
+Przede wszystkim `CustomerVerifier.java`, który jako serwis aplikacyjny wykorzystuje `VerificationRepository` do połączenia z bazą danych.
+
+W tym projekcie wykorzystujemy ORM (Hibernate) i warstwę abstrakcji repository w postaci rozszerzenia interfejsów z biblioteki Spring Data.
+
+Encją zapisywaną w bazie danych będzie `VerifiedPerson`.
+
+Do wersjonowania schematu bazy danych wykorzystujemy narzędzie `Flyway` i skrypty migrujące możemy znaleźć w katalogach `db/migration/h2` dla bazy `h2` oraz `db/migration/postgresql` dla bazy `postregsql`.
+
+== Notatki
+
+W przypadku testów integracyjnych z bazą danych trzeba tę bazę danych w jakiś sposób uruchomić. Z jednej strony chcielibyśmy, żeby nie trwało to zbyt długo (uruchomienie bazy, zasilanie jej danymi, interakcja), z drugiej chcielibyśmy żeby testy jak najbardziej odzwierciedlały system produkcyjny. Oczywiście też chcemy pełnej automatyzacji uruchamiania tej bazy.
+
+Potencjalne rozwiązania: Zaślepka, w pamięci, embedded, kontener
+
+=== Zaślepka [01]
+
+==== Klasy
+
+`_01_CustomerVerifierMocksDatabaseTests.java` - na slajdach zmienione tak, żeby się zmieściło na 1 slajdzie
+
+==== Notatki
+
+* Mocki weryfikują efekty uboczne
+* By upewnić się, że się coś po prostu zadziało
+* Czy doszło do zapisu do bazy danych
+* Zalety
+** Natychmiastowe działanie
+* Problemy
+** Brak testowania integracji
+** Dużo kodu ustawiającego stan początkowy
+
+=== Bazy danych uruchamiane w pamięci [02]
+
+==== Klasy
+
+`_02_InMemoryVerificationRepository.java` - jest to abstrakcja nad zwykłą mapę symulującą bazę danych. Kod wygląda na bardziej skomplikowany niż powinien, gdyż chcemy go wpiąć w istniejące rozwiązanie Spring Data. W innych językach mogłaby to być po prostu zwykła mapa.
+
+==== Notatki
+
+* Ręcznie zaimplementowana kolekcja
+** Ekstremalnie szybkie testy
+** Do rozważenia dla głównej części domeny / uruchomienia deweloperskiego
+** Brak interakcji z IO
+* Symulujące faktyczne bazy
+** Symulują dialekty
+** H2, HSQLDB, Apache Derby
+
+=== Bazy danych embedded [03]
+
+==== Klasy / Pliki
+
+Produkcyjne schematy migracyjne dla narzędzia Flyway
+
+* Schematy migracyjne dla bazy danych h2 - `main/src/db/migration/h2`
+* Schematy migracyjne dla bazy danych postgresql - `main/src/db/migration/postgresql`
+
+Testowe schematy migracyjne dla narzędzia Flyway
+
+* Schematy migracyjne dla bazy danych h2 - `test/src/db/migration/h2`
+* Schematy migracyjne dla bazy danych postgresql - `test/src/db/migration/postgresql`
+
+Konwencja jest taka, że V1 oznacza wersję numer 1. V1_1, wersję 1.1.
+
+Klasa `_03_CustomerVerifierWithEmbeddedTests.java` zawiera testy aplikacji Spring Boot, która poprzez adnotację `@EnableAutoConfiguration` oraz fakt, że w zależnościach (`pom.xml`) jest baza danych `h2`, uruchomi bazę danych i podepnie się do niej.
+
+==== Notatki
+
+* Może zapisywać dane w plikach
+** Przy współbieżnym i natężonym użyciu mogą się pojawiać problemy
+* Może instalować prawdziwą bazę danych na dysku
+* Przykłady
+** H2, HSQLDB, Apache Derby, RavenDB, MongoDB
+
+=== Bazy danych w kontenerze [04]
+
+==== Klasy / Pliki
+
+Produkcyjne schematy migracyjne dla narzędzia Flyway
+
+* Schematy migracyjne dla bazy danych h2 - `main/src/db/migration/h2`
+* Schematy migracyjne dla bazy danych postgresql - `main/src/db/migration/postgresql`
+
+Testowe schematy migracyjne dla narzędzia Flyway
+
+* Schematy migracyjne dla bazy danych h2 - `test/src/db/migration/h2`
+* Schematy migracyjne dla bazy danych postgresql - `test/src/db/migration/postgresql`
+
+Konwencja jest taka, że V1 oznacza wersję numer 1. V1_1, wersję 1.1.
+
+Klasa `_04_CustomerVerifierWithContainersTests.java` zawiera testy aplikacji Spring Boot. Najpierw uruchomiona zostanie baza w kontenerze, a następnie dzięki adnotacju `@EnableAutoConfiguration` oraz poprzez fakt, że w zależnościach (`pom.xml`) znajduje się zależność do bazy PostgreSQL, aplikacja połączy się z tą bazą danych.
+
+==== Notatki
+
+* Baza uruchamiana dla danego testu / danej grupy testów w kontenerze
+* Dość szybkie w momencie scache’owania obrazu bazy
+** Jeszcze szybciej jeśli reużywamy kontenerów
+* Przykłady natywnego wsparcia w testach
+** Testcontainers, dotnet-testcontainers
+* Łatwe do ręcznego zaimplementowania
+** Uruchom kontener, uruchom testy wobec kontenera, ubij kontener
+
+https://blog.jooq.org/tag/integration-testing/[Wywiad] z twórcą Testcontainers
+
+> W 2015, przed tym jak rozpocząłem projekt Testcontainers, mieliśmy problemy z paroma funkcjonalnościami MySQL, które nie miały swoich odpowiedników w H2. Dochodziliśmy do wniosku, że być może będziemy musieli ograniczyć funkcjonalności bazy do tego, co pozwala nam H2. Wyszło nam, że jest pewna nisza na rynku do rozwiązania typu H2, które w rzeczywistości jest fasadą na Dockerową bazę danych uruchamianą w kontenerze.

@@ -1,0 +1,65 @@
+= Testowanie Klientów HTTP
+
+== Kod
+
+Przede wszystkim `BIKVerificationService.java`
+
+== Notatki
+
+Jaki problem chcemy rozwiązać?
+
+* Nie chcemy uruchamiać testów całej aplikacji
+* Szybkie testy weryfikujące również zwracanie błędów
+
+W jaki sposób możemy przetestować z API zewnętrznym?
+
+* możemy postawić zewnętrzną usługę (np. inna aplikacja w naszym systemie)
+* możemy postawić zaślepkę usługi zewnętrznej
+* zaślepka usługi zewnętrznej przychodzi od tamtej usługi
+* możemy wykonać wywołanie do API środowiska sandboxowego
+
+=== Złe defaulty [01]
+
+==== Klasy
+
+`BIKVerificationServiceDefaultsTests.java`
+
+==== Notatki
+
+W tej klasie testowej chcemy:
+
+* Wytłumaczyć czemu wybieramy randomowe porty
+** Żeby nie było clasha portów jeśli jakiś inny proces na takim porcie działa
+** Prerequisite do zrównoleglania testów
+* W jaki sposób uruchamiamy WireMocka
+** Wytłumaczyć, że też można uruchomić WireMocka w trybie standalone jako osobny proces
+* Odkomentować test i wytłumaczyć dlaczego on nigdy nie przejdzie
+** Domyślna konfiguracja połączenia ma ustawiony timeout na wieczność
+
+=== Złe defaulty [02]
+
+==== Klasy
+
+`BIKVerificationServiceNoIOExceptionsTests.java`
+
+==== Notatki
+
+Klasa testowa wykorzystująca ręcznie ustawione wartości połączenia po HTTP. W tym przypadku, domyślna implementacja BIKVerificationService, w przypadku błędu zaloguje informacje o wyjątku.
+
+W tej klasie testowej pokazujemy
+* Jak powinniśmy przetestować naszego klienta HTTP.
+* Czy potrafimy obsłużyć wyjątki? Czy potrafimy obsłużyć scenariusze biznesowe?
+
+O problemach związanych z pisaniem zaślepek przez konsumenta API, będziemy mówić w dalszej części szkolenia. Tu pokażemy ręczne zaślepianie scenariuszy biznesowych.
+
+=== Bonus [03]
+
+Tego nie ma na slajdach i w ogóle o tym nie mówię w szkoleniu, ale jest w kodzie.
+
+==== Klasy
+
+`BIKVerificationServiceTests.java`
+
+==== Notatki
+
+Ta klasa testowa, nadpisuje zachowanie naszego klienta HTTP w taki sposób, że zamiast logować rzuca wyjątki. Udowadniamy naszym kursantom, że gdyby nie poprawne obsłużenie wyjątków, faktycznie zostałyby one rzucone.

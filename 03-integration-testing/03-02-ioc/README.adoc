@@ -1,0 +1,54 @@
+= Frameworki do Inversion of Control
+
+== W jaki sposób tworzysz obiekty? [01]
+
+=== Kod
+
+Tylko `_01_IocTests.java`
+
+=== Notatki
+
+Niezależnie od tego, czy używasz obiektowego języka programowania, czy programujesz funkcyjnie, w jakiś sposób musisz uzyskać dany obiekt lub funkcję. Jedną z opcji jest ich ręczne zainstacjonowanie. Co w przypadku złożeń funkcji albo stworzenia bardziej skomplikowanych obiektów? Spójrzmy na następujący przykłady kodu.
+
+== Co to jest Inversion of Control? [02,03]
+
+=== Kod
+
+Najpierw `_02_Config.java`, później `_03_SpringIocTests.java`.
+
+=== Notatki
+
+==== _02_Config.java
+
+W różnych językach programowania istnieją frameworki, które wprowadzają wspomniany mechanizm “Odwrócenia Kontroli”.  Zobaczmy na przykładzie Javy i Springa jak wyglądałoby użycie tego frameworka do rozdzielenia konstrukcji od użycia danego obiektu.
+
+==== _03_SpringIocTests.java
+
+Tak zdefiniowany schemat systemu jesteśmy w stanie przekazać do zarządcy, który będzie w stanie utworzyć te obiekty w odpowiedniej kolejności i utworzyć graf zależności między nimi.
+
+Następnie z zarządcą komunikujemy się w celu wyciągnięcia już utworzonego obiektu.
+
+Na nim możemy już operować w zakresie logiki biznesowej.
+
+== IOC / DI i testowanie [04,05]
+
+=== Kod
+
+Wpierw `_04_ManualSpringIocTests.java`, potem `_05_CustomerVerificationTests.java`
+
+=== Notatki
+
+Czy uruchamiać cały kontekst za każdym razem?
+
+Możemy użyć schematu konstrukcji obiektów, żeby nasz moduły zbudować ręcznie. Schemat zawiera definicje jak konstruować obiekty, dzięki czemu możemy schemat rozszerzyć o konstrukcje testowe. W ten sposób nie potrzebujemy stawiać całego kontekstu żeby przetestować komunikacji między obiektami.
+
+Interakcje zewnętrzne (z bazą danych / kolejkami itd.) możemy zamienić na komponenty działające w pamięci. W naszym teście możemy potem wywołać testowy element schematu konstrukcyjnego, który reużywa produkcyjnych komponentów z testowymi detalami.
+
+==== _04_ManualSpringIocTests.java
+
+Pokazujemy jak ręcznie możemy utworzyć obiekt, wykorzystując produkcyjny schemat konfiguracyjny.
+
+==== _05_CustomerVerificationTests.java
+
+Pokazujemy jak może wyglądać integracja kontenera
+IOC z frameworkiem do testowania.
