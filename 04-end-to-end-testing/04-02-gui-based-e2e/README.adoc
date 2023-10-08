@@ -1,0 +1,49 @@
+= 04.02 Testy E2E z poziomu GUI
+
+Tematy omawiane w tej części:
+
+* Częste problemy w testach E2E z poziomu GUI
+  - zobacz: `PetClinicTest`
+* Obsługa oczekiwania na załadowanie się strony
+  - zobacz: `PageObject.pageReady`
+* Zastosowanie wzorca PageObjectModel
+  - zobacz: `PetClinicPageObjectModelTest`
+* Nakładki na Selenium
+  - zobacz `PetClinicSelenideTest`
+
+**Setup do Testów**
+
+Testy Selenium w tym module są uruchamiane względem projektu [Pet Clinic](https://github.com/spring-projects/spring-petclinic).
+
+Przed uruchomieniem aplikacji należy zainstalować i uruchomić dockera (https://www.docker.com/).
+
+Projekt należy sklonować z GitHuba i odpalić lokalnie (radzimy użyć do tego Javy 17):
+
+```
+git clone https://github.com/spring-projects/spring-petclinic.git
+cd spring-petclinic
+./mvnw spring-boot:run
+```
+
+Strona będzie dostępna z przeglądarki spod: http://localhost:8080/.
+
+Żeby testy z wykorzystaniem WebDriver'a działały, należy ściągnąć wersję 
+WebDriver'a odpowiednią dla przeglądarki i systemu operacyjnego ze strony,
+a następnie ustawić jego lokalizację jako System Property. 
+
+Przykładowo dla Chrome'a:
+
+Wersję drivera odpowiednią dla wersji przeglądarki i systemu operacyjnego
+można ściągnąć z https://googlechromelabs.github.io/chrome-for-testing/.
+Potem lokalizację drivera trzeba ustawić jako System Property
+
+```
+System.setProperty("webdriver.chrome.driver", "./src/test/resources/drivers/chromedriver");
+```
+
+Uruchamianie testów:
+ 
+```
+cd 04-end-to-end-testing/04-02-gui-based-e2e/
+ ./mvnw clean test -De2e=true
+```

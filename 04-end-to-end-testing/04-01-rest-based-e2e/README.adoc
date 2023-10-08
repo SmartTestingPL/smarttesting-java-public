@@ -1,0 +1,72 @@
+= 04.01 Testy E2E z poziomu API
+
+Tematy omawiane w tej części:
+
+* Częste problemy w testach E2E po API
+  - zobacz: `HttpClientBasedCustomerVerificationTest.shouldSetOrderStatusToVerifiedWhenCorrectCustomer`
+* Obsługa eventual consistency
+  - zobacz: `HttpClientBasedCustomerVerificationTest.shouldSetOrderStatusToFailedWhenInCorrectCustomer`
+* Poprawa czytelności i ujednolicenie warstw abstrakcji
+  - zobacz: `HttpClientBasedCustomerVerificationTest.shouldSetOrderStatusToFailedWhenInCorrectCustomer`
+* Zastosowanie bibliotek do weryfikacji API
+  - zobacz `RestAssuredCustomerVerificationTest`
+* Zastosowanie bibliotek do generowania danych testowych
+  - zobacz `RestAssuredCustomerVerificationTest`
+
+**Uruchamianie aplikacji i testów**
+
+Moduł składa się z 4 podmodułów:
+* 2 "aplikacji biznesowych": 
+  - loan-orders - służy do składania wniosków o udzielenie pożyczki
+  - fraud-verifier - służy do weryfikacji klientów
+* Serwera Eureka służącego za ServiceRegistry (eureka-server)
+* e2e - modułu zawierającego testy E2E do uruchamienia względem już działającego systemu
+
+Przed uruchomieniem aplikacji należy zainstalować i uruchomić dockera (https://www.docker.com/).
+
+1. Uruchom MongoDB, np. przy użyciu dockera:
+
+```
+docker run -p 27017:27017 mongo
+``` 
+
+2. Uruchom Server Eureka:
+
+```
+cd 04-end-to-end-testing/04-01-rest-based-e2e/eureka-server/
+./mvnw clean install
+./mvnw spring-boot:run
+
+``` 
+
+3. Uruchom aplikację Fraud Verifier:
+
+```
+cd 04-end-to-end-testing/04-01-rest-based-e2e/fraud-verifier/
+./mvnw clean install
+./mvnw spring-boot:run
+```
+
+4. Uruchom aplikację Loan Orders:
+
+```
+cd 04-end-to-end-testing/04-01-rest-based-e2e/loan-orders/
+./mvnw clean install
+./mvnw spring-boot:run
+
+```
+
+5. Uruchom testy E2E:
+
+Z przebudowaniem projektu:
+
+```
+cd 04-end-to-end-testing/04-01-rest-based-e2e/e2e/
+./mvnw clean install -De2e=true
+```
+
+Jeżeli nie było żadnych zmian w zależnościach bądź innych częściach projektu:
+```
+cd 04-end-to-end-testing/04-01-rest-based-e2e/e2e/
+./mvnw test -De2e=true
+```
