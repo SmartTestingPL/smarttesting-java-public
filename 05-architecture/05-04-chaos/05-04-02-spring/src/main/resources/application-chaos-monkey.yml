@@ -1,0 +1,19 @@
+# Domyślnie wyłączamy chaos monkey
+chaos:
+  monkey:
+    enabled: false
+    # Wybieramy, które komponenty chcemy
+    watcher:
+      component: false
+      controller: false
+      # Włączamy obserwowanie repozytoriów
+      repository: true
+      rest-controller: false
+      service: false
+    assaults:
+      level: 1
+      latency-active: false
+      latency-range-start: 1000
+      latency-range-end: 3000
+      exceptions-active: true
+      memory-active: false

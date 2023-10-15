@@ -1,0 +1,35 @@
+= Testy chaosu
+
+== Kod
+
+`CustomerVerifier.java` z modułu `05-04-01`. Mamy tam kod odpowiedzialny za wyciągnięcie danych z bazy danych. W pierwotnej wersji nie ma w tym kodzie obsługi wyjątków.
+
+`JdbcVerificationRepository.java` z modułu `05-04-02` zostało adnotowane `@Repository`, gdyż Chaos Monkey może wówczas zmienić jego zachowanie w locie.
+
+Konfiguracja z `05-04-02` w pliku `application.yml` oraz `application-chaos-monkey.yml`, która ustawia https://codecentric.github.io/chaos-monkey-spring-boot/ . Będziemy w ramach testów jeszcze dodatkowo ustawiać odpowiednie wartości poprzez API Restowe.
+
+Jedyny i najważniejszy test - `SmartTestingApplicationTests.java` - gdzie uruchamiamy eksperymenty inżynierii chaosu.
+
+== Uruchomienie
+
+Najpierw uruchamiamy infrastrukturę.
+
+```
+$ docker-compose up
+```
+
+Następnie budujemy i uruchamiamy aplikację.
+
+```
+$ ./05-04-02-spring/mvnw install
+$ ./05-04-02-spring/target/05-04-02-spring-0.0.1-SNAPSHOT.jar
+```
+
+Teraz możemy uruchomić test, pamiętajmy o przekazaniu zmiennej systemowej `-Dchaos=true` lub o wykomentowaniu linijki `@EnabledIfSystemProperty(named = "chaos", matches = "true")`.
+
+Oba testy się wywalą.
+
+* `should_return_401_within_500_ms_when_calling_fraud_check_with_introduced_latency` - opóźnienie wynosi sekundę więc po 500 ms poleci `ReadTimeout`
+* `should_return_401_within_500_ms_when_calling_fraud_check_with_database_issues` - dostaniemy `INTERNAL_SERVER_ERROR` i status `500`, ponieważ poleci nam wyjątek z kodu bazodanowego, którego nie obsługujemy.
+
+Następnie należy zakomentować kod w `CustomerVerifier` odpowiedzialny za połączenie z bazą danych i odkomentowanie tego, który dodaje obsługę błędów. Po przebudowaniu kodu, uruchomieniu aplikacji i uruchomieniu ponownym testów, jeden test przejdzie, a drugi, z oczywistych względów się wywali.
