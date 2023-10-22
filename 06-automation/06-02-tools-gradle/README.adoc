@@ -1,0 +1,3 @@
+= Budowanie Narzędziem Opartym na Dowolności na Przykładzie Gradle
+
+W skrypcie `build.gradle` opisujemy za pomocą domknięć jak proces budowania powinien być skonfigurowany i jakie elementy powinien zawierać. W Gradle istnieją konwencje (np. w momencie ustawienia pluginu `java` źródła produkcyjne będą poszukiwane w katalogu `src/main/java`) natomiast nic nie blokuje nas przed pisaniem dowolnego kodu w skrypcie.

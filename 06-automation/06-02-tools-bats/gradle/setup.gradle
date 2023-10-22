@@ -1,0 +1,13 @@
+sourceSets {
+	main {
+		resources {
+			srcDirs 'src/main/bash', 'tools'
+		}
+	}
+	test {
+		resources {
+			srcDirs 'src/test/bats'
+			srcDirs 'src/test/docs_helper'
+		}
+	}
+}

@@ -1,0 +1,3 @@
+= Budowanie Narzędziem Opartym o Konwencje na Przykładzie Mavena
+
+W pliku konfiguracyjnym `pom.xml` definiujemy ustawienia projektu. Maven bazuje na konwencjach i wpinaniu się wtyczek w jego z góry zdefiniowany cykl życia.

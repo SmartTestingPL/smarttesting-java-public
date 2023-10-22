@@ -1,0 +1,228 @@
+/*
+Zawiera zadania i konfigurację do testowania skryptów bash i tworzenia dokumentacji
+z nich.
+
+Wymaga:
+- skryptów bashowych do przetestowania dostępnych w `src/main/bash`
+- testy Bats mają być dostępne pod `src/test/ bats`
+- katalog pomocniczy dla dokumentacji (`zshelldoc`) będzie dostępny w `src/test/docs_helper`
+- folder `tools` zawierający plik` build-helper.sh`, który wie jak
+> ściągnąć Shellcheck `download-shellcheck`
+> ściągnąć Bats `download-bats`
+> Zainstalować Zsd `install-bats`
+> Wygenerować Zsd `generate-zsd`
+> Zainicjalizować submoduły git `initialize-submodules`
+*/
+
+// pluginy
+plugins {
+	// Editorconfig, dzięki któremu weryfikujemy czy nasze pliki są dobrze sformatowane
+	id "org.ec4j.editorconfig" version "0.0.3"
+	id "java"
+}
+
+import java.util.concurrent.TimeUnit
+
+apply from: 'gradle/setup.gradle'
+
+ext {
+	/**
+	 * Metoda weryfikująca czy uruchomienie danej komendy nie skończy się wyjątkiem.
+	 * W ten sposób sprawdzamy np. czy dana komenda jest dostępna.
+	 */
+	isCommandAvailable = { String cmd ->
+		try {
+			cmd.execute()
+			return true
+		} catch (IOException e) {
+		}
+		return false
+	}
+
+	/**
+	 * Sprawdzamy czy shellcheck został zainstalowany.
+	 */
+	isShellcheckPresent = {
+		isCommandAvailable("shellcheck -V")
+	}
+
+	shellcheckFile = isShellcheckPresent() ? new File("shellcheck") :
+		new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck")
+
+	shellcheckVersionWithoutPrefix = "${shellcheckVersion}".startsWith("v") ? "${shellcheckVersion}".substring(1) : "${shellcheckVersion}"
+
+	/**
+	 * Weryfikujemy wersję Shellcheck.
+	 */
+	assertShellcheckVersion = {
+		String output = ""
+		new ByteArrayOutputStream().withStream { os ->
+			String cmd = shellcheckFile.path + " -V"
+			project.logger.lifecycle("Executing cmd [${cmd}]")
+			Process p = cmd.execute()
+			p.consumeProcessOutput(os, os)
+			p.waitFor(5L, TimeUnit.SECONDS)
+			output = os.toString()
+		}
+		project.logger.lifecycle("Checking if shellcheck version is [${shellcheckVersionWithoutPrefix}]")
+		boolean versionIsOk = output.contains("version: ${shellcheckVersionWithoutPrefix}")
+		if (!versionIsOk) {
+			logger.info("Shellcheck is in wrong version. The output of checking version is \n\n[${output}]")
+		}
+	}
+
+	/**
+	 * Sprawdzamy czy Shellcheck został ściągnięty.
+	 */
+	isShellcheckDownloaded = {
+		shellcheckFile.exists()
+	}
+
+}
+
+/**
+ * Zadanie instalujące ZShell Doc, jeśli nie został już zainstalowany / ściągnięty.
+ */
+task installZshellDocIfMissing() {
+	group = 'Documentation'
+	description = 'Installs ZShell if missing'
+	doLast {
+		boolean zsdInstalled = isCommandAvailable("zsd -h")
+		boolean zsdDownloaded = new File(project.rootProject.buildDir, "zsd/bin/zsd").exists()
+		exec {
+			if (zsdInstalled || zsdDownloaded) {
+				commandLine "echo", "zsd installed - continuing"
+			} else {
+				logger.lifecycle("zsd is missing. Will try to install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "install-zsd"
+			}
+		}
+	}
+}
+
+/**
+ * Zadanie generujące dokumentację dla skryptów Bashowych.
+ */
+task zsd {
+	group = 'Documentation'
+	description = 'Generates the docs'
+	dependsOn installZshellDocIfMissing
+	doLast {
+		exec {
+			commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "generate-zsd"
+		}
+	}
+}
+
+/**
+ * Zadanie instalujące Shellcheck jeśli go nie ma.
+ */
+task installShellcheckIfMissing {
+	group = 'Documentation'
+	description = 'Installs Shellcheck if missing'
+	doLast {
+		boolean shellcheckInstalled = isShellcheckPresent() || isShellcheckDownloaded()
+		exec {
+			if (shellcheckInstalled) {
+				assertShellcheckVersion()
+				commandLine "echo", "Shellcheck installed in version [${shellcheckVersionWithoutPrefix}] - continuing"
+			} else {
+				logger.lifecycle("Shellcheck is missing. Will install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-shellcheck"
+			}
+		}
+	}
+}
+
+/**
+ * Zadanie uruchamiające Shellcheck.
+ */
+task shellcheck {
+	group = 'Documentation'
+	description = 'Runs Shellcheck'
+	doLast {
+		boolean shellcheckInstalled = isShellcheckPresent()
+		String pathToShellcheck = "shellcheck"
+		if (!shellcheckInstalled) {
+			pathToShellcheck = new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck").path
+		}
+		sourceSets*.resources.srcDirs*.each { srcDir ->
+			fileTree(relativePath(srcDir))
+				.include('**/*.sh')
+				.exclude("**/build/**")
+				.exclude("**/zsdoc/**")
+				.each { File script ->
+				logger.lifecycle("Running Shellcheck for [${script}]")
+				exec {
+					commandLine pathToShellcheck, script
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Zadanie inicjujące submoduły gitowe.
+ */
+task initlializeSubModules() {
+	group = 'Documentation'
+	description = 'Initializes git submodules'
+	doLast {
+		exec {
+			commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "initialize-submodules"
+		}
+	}
+}
+
+/**
+ * Zadanie instalujące Bats, jeśli nie został już zainstalowany / ściągnięty.
+ */
+task installBatsIfMissing() {
+	group = 'Documentation'
+	description = 'Installs bats if missing'
+	doLast {
+		boolean batsInstalled = isCommandAvailable("bats -v")
+		exec {
+			if (batsInstalled) {
+				commandLine "echo", "Bats installed - continuing"
+			} else {
+				logger.lifecycle("Bats is missing. Will try to install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-bats"
+			}
+		}
+	}
+}
+
+/**
+ * Zadanie uruchamiające testy Bats.
+ */
+task bats {
+	group = 'Documentation'
+	description = 'Runs Bats'
+	doLast {
+		boolean batsInstalled = isCommandAvailable("bats -v")
+		String pathToBats = "bats"
+		String outputTapFile = project.buildDir.path + "/bats.tap"
+		if (!batsInstalled) {
+			pathToBats = new File(project.rootProject.buildDir, "bats/bin/bats").path
+		}
+		exec {
+			standardOutput = new org.apache.tools.ant.util.TeeOutputStream(
+				new FileOutputStream(outputTapFile), System.out)
+			commandLine pathToBats, '-t', 'src/test/bats'
+		}
+	}
+}
+
+editorconfig {
+	includes = ['src/**', 'build.gradle']
+	excludes = ['src/test/docs_helper/**', 'src/main/bash/zsdoc/data/**']
+}
+
+check.dependsOn("editorconfigCheck")
+test.dependsOn("shellcheck")
+shellcheck.dependsOn("installShellcheckIfMissing")
+installBatsIfMissing.dependsOn("initlializeSubModules")
+bats.dependsOn("installBatsIfMissing")
+test.dependsOn("bats")
+test.dependsOn("zsd")

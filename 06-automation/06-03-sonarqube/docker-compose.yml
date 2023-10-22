@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - 9500:9000

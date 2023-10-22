@@ -1,0 +1,13 @@
+= Automatyzacja Projektu i Metryki Jakości
+
+== Automatyzacja Projektu
+
+W lekcji 06-02 pokazujemy różne narzędzia do testowania skryptów (Bats) / budowania aplikacji (Maven / Gradle). Wybraliśmy te narzędzia jako przykłady:
+
+* Testowania skryptów (Bats)
+* Procesu budowania opartego o konwencje (Maven)
+* Procesu budowania opartego na dowolności (Gradle)
+
+== Metryki jakości
+
+Uruchamiamy SonarQube jako projekt, który wygeneruje nam raport z metrykami jakości. Wykorzystujemy narzędzie Jacoco do wyliczenia pokrycia kodu testami.

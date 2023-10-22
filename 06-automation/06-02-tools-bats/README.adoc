@@ -1,0 +1,20 @@
+= Testowanie Skryptów z Frameworkiem Bats [06-02]
+
+Całe repozytorium kodu SmartTesting budowane jest Mavenem (https://maven.apache.org/), stąd obecność `pom.xml` w tym katalogu. Maven odpala Gradlea (https://gradle.org), w którym
+mamy dużo metod dociągających zależności potrzebne do uruchomienia Batsa (https://github.com/bats-core/bats-core) i Shellchecka (https://github.com/koalaman/shellcheck). Czyli, de facto, można uruchomić
+
+```bash
+$ ./gradlew build
+```
+
+żeby uruchomić testy Bats / Shellcheck / Editorconfig (https://editorconfig.org/).
+
+== Kod
+
+W pliku `tools/build-helper.sh` mamy skrypty Bashowe pomagające przy buildzie. Skrypt potrafi np. dociągnąć różne aplikacje.
+
+W katalogu `src/main/bash` mamy skrypty Bashowe, które chcemy przetestować.
+
+W katalogu `src/test/bats` mamy skrypty Bats do testów skryptów bashowych.
+
+W katalogu `src/main/bash/zsdoc` mamy dokumentację w Asciidoctor skryptów Bashowych (przez projekt https://github.com/zdharma/zshelldoc)

@@ -19,6 +19,7 @@
 		<module>03-integration-testing</module>
 		<module>04-end-to-end-testing</module>
 		<module>05-architecture</module>
+		<module>06-automation</module>
 		<module>bonus-livecoding-tests</module>
 	</modules>
 

@@ -1,0 +1,49 @@
+script.sh(1)
+============
+:compat-mode!:
+
+NAME
+----
+script.sh - a shell script
+
+SYNOPSIS
+--------
+
+Receives a request from an external system.
+
+
+FUNCTIONS
+---------
+
+ request
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 9 line(s). Calls functions:
+
+ Script-Body
+ `-- request
+
+Uses feature(s): _export_
+
+_Exports (environment):_ CURL_BIN [big]*//* URL
+
+request
+~~~~~~~
+
+____
+ # Will call an external URL to retrieve a user.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ Script-Body
+
+_Environment variables used:_ CURL_BIN [big]*//* URL
+
