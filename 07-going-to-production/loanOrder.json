@@ -1,0 +1,13 @@
+{
+  "customer": {
+    "uuid": "33d2f13c-6d96-4883-9871-1e158ced00f2",
+  "person": {
+    "name": "Anna",
+    "surname": "Kowalska",
+    "nationalIdentificationNumber": "86110302148",
+    "gender": "FEMALE",
+    "dateOfBirth": "1986-11-03"
+  }
+},
+"amount": 2000
+}

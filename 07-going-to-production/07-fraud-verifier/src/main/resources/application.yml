@@ -1,0 +1,34 @@
+server:
+  port: 9092
+
+spring:
+  application:
+    name: fraud-verifier
+
+# Umożliwia uruchomienie konsoli feature togglz
+togglz:
+  console:
+    path: /togglz-console
+    enabled: true
+    secured: false
+    use-management-port: false
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - env
+          - metrics
+          - prometheus
+          - togglz
+
+logging:
+  level:
+    org.springframework: debug
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
