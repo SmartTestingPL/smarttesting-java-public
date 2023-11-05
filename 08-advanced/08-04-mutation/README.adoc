@@ -1,0 +1,23 @@
+= Testy mutacyjne [08-04]
+
+== Kod
+
+Najpierw `_01_AgeVerification` jako implementacja, którą będziemy testować.
+
+Potem `_02_AgeVerificationTests#should_throw_exception_when_age_invalid` oraz `should_return_positive_verification_when_age_is_within_the_threshold` i `should_return_positive_verification_when_age_is_below_the_threshold` oraz `should_return_positive_verification_when_age_is_above_the_threshold`.
+Czyli weryfikujemy
+
+* wiek z przyszłości
+* wiek w ramach przedziału akceptowalnego
+* wiek poniżej przedziału
+* wiek powyżej przedziału
+
+Jak uruchomimy narzędzie do policzenia pokrycia kodu testami, to wyjdzie nam 100% pokrycia kodu. Pytanie jest czy wszystkie ścieżki zostały rzeczywiście pokryte? Zapomnieliśmy o warunkach brzegowych!
+
+Jeśli uruchomimy:
+
+```
+$ ./mvnw verify
+```
+
+Uzyskamy raport w katalogu `target/pit-reports`, z którego możemy wyczytać, że brakuje nam weryfikacji pewnych warunków w naszych testach. Wystarczy zakomentować adnotację `@Disabled` na testach w klasie `_02_AgeVerificationTests` i testy mutacyjne powinny przejść.

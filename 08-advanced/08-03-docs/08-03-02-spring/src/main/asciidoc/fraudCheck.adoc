@@ -1,0 +1,24 @@
+= Spring REST Docs Sample
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+Sample application demonstrating how to use Spring REST Docs.
+
+Here you can have some very important text related to your documentation.
+
+Snippets!
+
+== Fraud Check
+
+.Curl
+include::{snippets}/fraudCheck/curl-request.adoc[]
+
+.Http
+include::{snippets}/fraudCheck/http-request.adoc[]
+
+.Httpie
+include::{snippets}/fraudCheck/httpie-request.adoc[]
+
+.Request body
+include::{snippets}/fraudCheck/request-body.adoc[]

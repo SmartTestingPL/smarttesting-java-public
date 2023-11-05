@@ -21,6 +21,7 @@
 		<module>05-architecture</module>
 		<module>06-automation</module>
 		<module>07-going-to-production</module>
+		<module>08-advanced</module>
 		<module>bonus-livecoding-tests</module>
 	</modules>
 

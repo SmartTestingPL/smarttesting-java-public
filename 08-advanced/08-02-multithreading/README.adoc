@@ -1,0 +1,31 @@
+= Testowanie kodu wielowątkowego [08-02]
+
+== Kod
+
+=== Testowanie wielowątkowe
+
+W module `08-02-01` - `_01_CustomerVerifier`. Główna klasa biznesowa, do której będziemy mieli sporo przypadków testowych.
+
+Zaczynamy od testów w `_02_CustomerVerifierTests`. Pierwsze testy `should_return_results_in_order_of_execution` oraz `should_work_in_parallel_with_less_constraint` pokazują jak zapięcie się na konkretne wyniki w konkretnej kolejności, tam gdzie nie ma to sensu, może zepsuć nam testy.
+
+Następnie pokażemy jak weryfikować procesowanie równoległe. Wywołanie metody `_01_CustomerVerifier#verifyAsync` spowoduje uzyskanie i zapisanie zdarzenia przez komponent `_03_VerificationListener`. Każda z weryfikacji, w osobnym wątku, wyśle zdarzenie, które zostanie odebrane przez `_03_VerificationListener` w różnym czasie.
+
+Odkomentowany test `should_work_in_parallel_without_a_sleep` w klasie `_02_CustomerVerifierTests` się wywali, ponieważ zakończy się szybciej niż procesowanie.
+
+Rozwiązaniem skutecznym, aczkolwiek nieskalującym się i po prostu nienajlepszym, jest umieszczenie oczekiwania przez wątek testu przez X czasu. Przykładem tego jest `_02_CustomerVerifierTests#should_work_in_parallel_with_a_sleep`. Zdecydowanie lepszym rozwiązaniem jest odpytywanie komponentu nasłuchującego na zdarzenia co X czasu, maksymalnie przez Y czasu. Przykład `_02_CustomerVerifierTests#should_work_in_parallel_with_awaitility`.
+
+W przypadku procesowania wielowątkowego, najlepej jest zawsze próbować testować nasz kod jakby był w jednym wątku. W klasie `_01_CustomerVerifier` metoda `foundFraud` uruchamiana metodę w komponencie `_04_VerificationNotifier`, która jest adnotowana jako `@Async`, co oznacza, że wykona się w innym wątku. Komponent `_04_VerificationNotifier` moglibyśmy przetestować osobno, jednostkowo. To, co możemy zrobić z testem klasy `_01_CustomerVerifier` to przetestowanie czy efekt uboczny w postaci wywołania naszego komponentu wykonał się w odpowiednim czasie.
+
+Przykładami takich testów są `_05_AsyncCustomerVerifierTests` oraz `_06_AsyncCustomerWithSpyVerifierTests`. W pierwszym przypadku mamy test, w którym weryfikujemy czy efekt uboczny zostanie wywołany. Nie ma nawet potrzeby uruchamiania tego kodu w osobnym wątku. Jeśli chcemy natomiast przetestować czy potrafimy rzeczywiście uruchomić test w osobnym wątku to w klasie `_06_AsyncCustomerWithSpyVerifierTests` tworzymy sobie sztuczną implementację `FraudAlertNotifier` z adnotacją `@Async` i w teście musimy zmienić asercję tak, żeby oczekiwać na wykonanie się metody na naszym szpiegu (`spy`). Innymi słowy tworzymy obiekt `FraudAlertNotifier`, opakowany w proxy biblioteki do mockowania, żeby zweryfikować, czy wywołanie miało miejsce. Nie tworzymy mocka, gdyż w takim przypadku, Spring nie będzie wiedział, że metoda jest adnotowana `@Async` i nie deleguje uruchomienia do osobnego wątku. Patrząc w logi będziemy widzieć, że raz, w osobnym wątku została zalogowana wiadomość:
+
+```
+2020-08-23 19:38:05.652  INFO 55240 --- [         task-1] AsyncCustomerWithSpyVerifierTests$Config : Hello
+```
+
+=== Testowanie wielowątkowe - obsługa błędów
+
+Testowanie wielowątkowe - obsługa błędów. Kod produkcyjny - `_01_CustomerVerifier#verify` oraz `_07_ExceptionThrowingVerification`. W teście `ExceptionCustomerVerifierTests` pokazujemy jak wyjątek rzucony w osobnym wątku wpływa na nasz główny wątek i jak możemy temu zaradzić.
+
+=== Testowanie wielowątkowe - programowanie reaktywne
+
+Implementacja - `_01_CustomerVerifier#verifyFlux` oraz `_01_CustomerVerifier#verifyParallelFlux`. Testy znajdują się w klasie `_08_ReactorCustomerVerifierTests`.

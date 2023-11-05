@@ -1,0 +1,16 @@
+= Dokumentacja przez testy [08-03]
+
+== Kod
+
+Przede wszystkim `FraudController` i `_01_FraudControllerTests`.
+W `08-03-02-spring/src/main/asciidoc/fraudCheck.adoc` mamy wzór dokumentacji naszego API. Plik ten będzie używał kawałków kodu, które zostaną wygenerowane z testu.
+
+W `08-03-02-spring/pom.xml` w konfiguracji pluginu `asciidoctor`, ustawiamy jak wygenerować z pliku `.adoc` dokumentację w HTML.
+
+Pokazujemy najpierw test, weryfikujący nasze API - `should_return_fraud`. Następnie test, generujący dokumentację `should_return_fraud_with_rest_docs`. Na koniec test z dokumentacją, kontraktami oraz zaślepką - `should_return_fraud_with_rest_docs_and_spring_cloud_contract`.
+
+Zbudowany projekt `./mvnw clean install` sprawi, że w podkatalogu `08-03-02-spring/target` pojawią nam się następujące katalogi
+
+* `contracts` - wygenerowane z testu kontrakty do testów kontraktowych
+* `fraudCheck` - wygenerowane z testu przykłady wywołań HTTP dla różnych narzędzi
+* `stubs` - wygenerowane z testu zaślepki komunikacji po HTTP

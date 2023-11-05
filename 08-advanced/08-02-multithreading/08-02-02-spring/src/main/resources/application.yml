@@ -1,0 +1,15 @@
+spring:
+  rabbitmq:
+    port: ${RABBIT_PORT:5672}
+    host: ${RABBIT_HOST:localhost}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+server.port: 4321
+
+logging:
+  level:
+    de.codecentric.spring.boot.chaos.monkey: DEBUG
