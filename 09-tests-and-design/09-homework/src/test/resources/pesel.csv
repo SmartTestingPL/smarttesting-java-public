@@ -1,0 +1,4 @@
+birthDate, gender, passes
+1998-03-14, FEMALE, true
+1998-03-14, MALE, false
+2000-03-14, FEMALE, false

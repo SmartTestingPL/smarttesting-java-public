@@ -22,6 +22,7 @@
 		<module>06-automation</module>
 		<module>07-going-to-production</module>
 		<module>08-advanced</module>
+		<module>09-tests-and-design</module>
 		<module>bonus-livecoding-tests</module>
 	</modules>
 
